@@ -116,12 +116,19 @@ select {
   accent-color: var(--accent);
 }
 .app {
-  min-height: 100svh;
+  height: 100vh;
   height: 100dvh;
-  min-height: 560px;
   position: relative;
   isolation: isolate;
   overflow: hidden;
+}
+/* Reserve the notice's measured height, including when its text wraps. */
+.world-heading,
+.world-metrics,
+.welcome,
+.side-panel,
+.extinction-banner {
+  margin-block-start: var(--connection-space, 0px);
 }
 .sr-only {
   position: absolute;
@@ -688,6 +695,7 @@ select {
   margin-top: 4px;
 }
 .panel-body {
+  min-height: 0;
   padding: 18px 20px 24px;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -1419,9 +1427,6 @@ input[type="range"] {
   }
 }
 @media (max-width: 600px) {
-  .app {
-    min-height: 540px;
-  }
   .app-header {
     height: 76px;
     padding: 12px 16px;
@@ -1872,4 +1877,106 @@ input[type="range"] {
 }
 .request-id {
   overflow-wrap: anywhere;
+}
+/* Keep primary navigation in the viewport on landscape phones. */
+@media (max-height: 560px) {
+  .app-header {
+    height: 56px;
+    padding-block: 6px;
+  }
+  .connection-notice {
+    top: 56px;
+    padding-block: 9px;
+  }
+  .world-heading {
+    top: 64px;
+    padding-block: 6px;
+  }
+  .world-subtitle,
+  .world-name > .small,
+  .welcome-art,
+  .welcome h2,
+  .welcome > p,
+  .observation-hint,
+  .world-coordinates,
+  .scene-caption,
+  .selected-hint {
+    display: none;
+  }
+  .welcome {
+    top: 108px;
+    padding: 8px 16px;
+  }
+  .welcome .offline-note {
+    margin-bottom: 6px;
+  }
+  .welcome .configure-button {
+    margin-top: 4px;
+    padding-block: 6px;
+  }
+  .has-connection-notice .welcome .offline-note,
+  .has-connection-notice .welcome .configure-button,
+  .app[data-world-id=""] .world-update {
+    display: none;
+  }
+  .world-metrics {
+    top: 112px;
+    padding-block: 8px;
+  }
+  .world-footer {
+    height: calc(80px + env(safe-area-inset-bottom));
+    display: flex;
+    justify-content: center;
+    padding: 4px 12px max(4px, env(safe-area-inset-bottom));
+  }
+  .dock button {
+    min-height: 50px;
+    padding-block: 6px;
+  }
+  .world-update {
+    position: absolute;
+    inset-inline-start: 16px;
+    bottom: calc(88px + env(safe-area-inset-bottom));
+  }
+  .footer-right {
+    position: absolute;
+    inset-inline-end: 16px;
+    bottom: calc(88px + env(safe-area-inset-bottom));
+  }
+  .camera-controls {
+    bottom: calc(148px + env(safe-area-inset-bottom));
+  }
+  .side-panel {
+    top: 64px;
+    bottom: calc(88px + env(safe-area-inset-bottom));
+    max-height: none;
+  }
+  .panel-head {
+    padding-block: 10px;
+  }
+  .has-panel .world-heading,
+  .has-panel .world-metrics,
+  .has-panel .world-update,
+  .has-panel .footer-right,
+  .camera-controls.with-panel {
+    display: none;
+  }
+}
+@media (max-height: 560px) and (min-width: 601px) {
+  .camera-controls {
+    flex-direction: row;
+    inset-inline-end: 16px;
+  }
+  .camera-controls .control-rule {
+    width: 1px;
+    height: 24px;
+  }
+  .camera-controls .zoom-value {
+    padding-inline: 6px;
+  }
+}
+@media (max-height: 560px) and (max-width: 600px) {
+  .camera-controls {
+    bottom: calc(88px + env(safe-area-inset-bottom));
+  }
 }

@@ -1,6 +1,6 @@
 {
   "product": "Stratoks Phase 1",
-  "status": "implemented and locally validated; ready for submission capture",
+  "status": "revision findings fixed and locally validated; ready for submission capture",
   "staticExport": "dist/index.html",
   "staticAssetBase": "./",
   "clientSource": "web/",
@@ -54,12 +54,25 @@
     "Static hosting does not deploy the simulation service."
   ],
   "integrity": {
-    "exportBytes": 1036995,
-    "indexSha256": "634a0b298ea9c56fcac26fbb4597e30064933b48e161783b3b1e066aedd46034",
+    "exportBytes": 1039409,
+    "indexSha256": "5f74506c0a2371a0611ecdd442b6a5702dd4cb85c1f302698d42bb8844d513c0",
     "submissionLimitBytes": 8388608,
-    "existingHistoryBundleBytes": 77496,
-    "candidateFileBytes": 3644640,
-    "candidateFileCount": 120,
-    "note": "Candidate regular files plus existing Git history are conservatively below the limit before compression. Final commit is created by the submission system. No dependency/cache directories, unnecessary archives or submodules are included."
+    "existingHistoryBundleBytes": 2362581,
+    "candidateFileBytes": 4609803,
+    "candidateFileCount": 134,
+    "note": "Candidate regular file bytes plus the existing HEAD Git bundle are conservatively below 8 MiB before compression. Final commit is created by the submission system. No dependency/cache directories, unnecessary archives or submodules are included.",
+    "conservativeTotalBytes": 6972384
+  },
+  "revision": {
+    "findingCount": 4,
+    "reproduced": 4,
+    "fixed": 4,
+    "responses": ".imd-responses.json",
+    "evidence": "docs/revision/",
+    "focusedChromiumChecks": 22,
+    "layoutMeasurements": 57,
+    "node": "v24.22.1",
+    "chromium": "156.0.8078.4",
+    "performanceExperiments": "Historical accepted results retained; not rerun for these client fixes."
   }
 }

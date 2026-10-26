@@ -74,6 +74,8 @@ Two integration fixes strengthen intervention durability: all accepted IDs remai
 
 See [validation and six-domain review](docs/VALIDATION.md), [raw results](docs/results/), [screenshots](docs/screenshots/) and [design system](DESIGN.md).
 
+The revision reproduced and fixed all four reopened client findings: landscape viewport overflow, connection notices covering the title, rejected visitor presence shown as success, and learning status during detail loading. [Revision evidence](docs/revision/) contains the before/final measurements and actual screenshots. The focused production-browser suite passed **22 checks**, including real-service capacity rejection and recovery; broader checks below were also rerun. Earlier capacity measurements remain historical and were not repeated for these client fixes.
+
 - Production build and TypeScript check: passed.
 - Server tests: **23/23 passed**, including two new persistence regressions; covers feeding, building, growth, reproduction, starvation, disasters, authentication, restart, learning retention, duplicate effects, backup/restore and extinction.
 - Client protocol tests: **7/7 passed** against real simulation projections.
@@ -90,6 +92,7 @@ node web/scripts/task.mjs test
 node web/scripts/task.mjs build
 node web/scripts/check-browser.mjs
 node web/scripts/check-interface.mjs
+node web/scripts/check-revision.mjs /tmp/stratoks-revision-checks
 node web/scripts/measure-service.mjs
 ```
 

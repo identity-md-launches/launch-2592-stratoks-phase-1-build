@@ -1,9 +1,11 @@
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   useSyncExternalStore,
+  type CSSProperties,
 } from "react";
 import { WorldCanvas, type Camera } from "./WorldCanvas";
 import { worldStore } from "./store";
@@ -43,6 +45,17 @@ export default function App() {
     worldStore.getSnapshot,
   );
   const camera = useRef<Camera>(null);
+  const connectionNotice = useRef<HTMLDivElement>(null);
+  const [noticeHeight, setNoticeHeight] = useState(0);
+  useLayoutEffect(() => {
+    const notice = connectionNotice.current;
+    if (!notice) return;
+    const measure = () => setNoticeHeight(notice.getBoundingClientRect().height);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(notice);
+    return () => observer.disconnect();
+  }, [!!state.error]);
   const [panel, setPanel] = useState<Panel>(null);
   const [modal, setModal] = useState<"settings" | "help" | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
@@ -167,7 +180,10 @@ export default function App() {
     .at(-1);
   return (
     <div
-      className={`app ${panel ? "has-panel" : ""}`}
+      className={`app ${panel ? "has-panel" : ""} ${state.error ? "has-connection-notice" : ""}`}
+      style={
+        { "--connection-space": state.error ? `${noticeHeight + 12}px` : "0px" } as CSSProperties
+      }
       data-mode={state.mode}
       data-world-tick={state.tick}
       data-world-id={state.world?.worldId ?? ""}
@@ -349,7 +365,7 @@ export default function App() {
           </div>
         )}
         {state.error && (
-          <div className="connection-notice" role="status">
+          <div className="connection-notice" role="status" ref={connectionNotice}>
             <Icon name="signal" size={18} />
             <span>{state.error}</span>
             <button
@@ -808,20 +824,42 @@ function VisitPanel({
     [confirm, setConfirm] = useState(false);
   useEffect(() => {
     if (!placed || !session) return;
+    let cancelled = false;
     const timer = setInterval(() => {
-      connection.request("/api/visitor/presence", { x, y }, true).catch(() => {
-        setPlaced(false);
-        setError("Presence expired. Sign in and place your visitor again.");
-      });
+      connection
+        .request<{ ok: boolean }>("/api/visitor/presence", { x, y }, true)
+        .then((result) => {
+          if (!cancelled && !result.ok) {
+            setPlaced(false);
+            setNotice("");
+            setError("The world’s visitor spaces are full. Try again later.");
+          }
+        })
+        .catch(() => {
+          if (cancelled) return;
+          setPlaced(false);
+          setNotice("");
+          setError("Presence expired. Sign in and place your visitor again.");
+        });
     }, 30000);
-    return () => clearInterval(timer);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
   }, [placed, session, x, y]);
   async function action(type: string) {
     setBusy(true);
     setError("");
     setNotice("");
     try {
-      await connection.request("/api/visitor/presence", { x, y }, true);
+      const presence = await connection.request<{ ok: boolean }>(
+        "/api/visitor/presence", { x, y }, true,
+      );
+      if (!presence.ok) {
+        setPlaced(false);
+        setError("The world’s visitor spaces are full. Try again later.");
+        return;
+      }
       setPlaced(true);
       if (type !== "presence")
         await connection.request("/api/visitor/action", { type }, true);

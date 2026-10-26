@@ -2,6 +2,51 @@
 
 Date: 26 October 2026. These are reproducible worker-side observations, not independent certification. The assignment’s verifier checks paths and bytes, not behavior.
 
+## Revision: four reproduced client findings
+
+Complete for the stated revision scope. All four reports reproduced against the original committed export before source edits. Responses are in root `.imd-responses.json`. Only the affected client behavior, its export, regression checks and documentation changed; the accepted simulation/service implementation and dependencies were retained.
+
+Current evidence is archived in [revision/](revision/): `before.json`, `checks.json`, `browser-checks.json`, `interface-checks.json`, `taste.json` and six real production-browser screenshots. `checks.json` records **22 passing checks**, **57 layout measurements** and no uncaught application errors. Node **v24.22.1**, Playwright Chromium **156.0.8078.4**, local x64 Linux; viewport emulation is not physical-device testing. The visitor tests sign a real EIP-191 challenge with an ephemeral generated test wallet and use the delivered HTTP service with manual simulation ticks. No capacity response is mocked. The 30-second browser refresh is advanced with Playwright's virtual clock; this is not a real-time soak.
+
+| Finding | Reproduction before editing | Fix and final evidence |
+|---|---|---|
+| `1e8ca2…3517` · high, landscape toolbar | At 667×375, app/document height 560px, CTA y=347.375–393.375, footer y=460–560 | `web/src/styles.css:118` removes fixed minima; `:1882` compacts short-height chrome/welcome and keeps panels scrolling. Final app/document 375px, CTA y=140–186, footer y=295–375. All five toolbar actions work at eight tested viewports; landscape panel scroll and inspector tested. |
+| `bf18fc…9fdc` · connection notice/copy | At 390×844 with an unavailable local URL, notice y=76–130 covered heading y=82–144; empty world ID still said the last view was frozen | `web/src/App.tsx:47`, `web/src/styles.css:125` reserve the actual notice height plus 12px; `web/src/service.ts:218` chooses initial-failure text unless a world snapshot exists. At 390, heading now y=148–210 below notice y=76–130. Five failure viewports pass; real snapshot loss retains frozen wording, metrics remain below the title, and reconnect removes reserved space. |
+| `635fcf…ff60` · rejected visitor presence | Actual 64-visitor world returned HTTP 200 `{ "ok": false }`, authenticated address absent, UI announced success and enabled Leave food | `web/src/App.tsx:825` checks both action-time and timed presence responses, clears stale success and disables actions on rejection. Actual service rejects initial placement, a gift's preflight and a 30-second refresh. No `/api/visitor/action` request follows rejection. Freeing a slot and explicitly retrying restores placement and a real food gift. |
+| `810454…42ce6` · inspector learning load | With `world.learning=true`, holding detail HTTP responses showed “Learning disabled for this world” | `web/src/Panels.tsx:389` uses the snapshot flag. Enabled/disabled worlds each report their actual status while details are held; statistics remain dashes and visitor memories say Loading. Released details populate statistics without changing the enabled-world statement. |
+
+### Revision commands actually run
+
+| Command | Outcome |
+|---|---|
+| `node web/scripts/task.mjs build` | Exit 0; final relative-URL production export in `dist/` |
+| `node web/scripts/task.mjs typecheck` | Exit 0, `tsc --noEmit` |
+| `node web/scripts/task.mjs test` | Exit 0, 7/7 protocol tests |
+| `node --test tests/*.test.js` | Exit 0, 23/23 service/simulation/authentication/persistence tests |
+| `node web/scripts/check-revision.mjs` | Exit 0, 22 Chromium checks, 57 recorded geometries; default output `artifacts/revision/` archived here under `docs/revision/` |
+| `node web/scripts/check-browser.mjs` | Exit 0, 20 existing Chromium integration checks; two real clients, wallet authentication, interventions, reconnect and reset |
+| `node web/scripts/check-interface.mjs` | Exit 0, 9 existing interface checks; seven axe states without violations and eight rendered text/background pairs above 4.5:1 |
+| `node .imd/reads/skills/design-critic/scripts/taste.mjs --out test/scratch/taste` | Exit 0, 16/16 checks at 320/390/1440; `IMD_PLAYWRIGHT` and `PLAYWRIGHT_BROWSERS_PATH` pointed to the temporary install |
+
+Dependencies, runtime downloads and service test data were kept under `/tmp`. The new script accepts an output-directory argument, e.g. `node web/scripts/check-revision.mjs /tmp/stratoks-revision-checks`. The build still reports the existing transitive `ox`/`node:worker_threads` externalization warning. No uncaught runtime errors were observed in the checked browser flows.
+
+### Better Interface review of the revised surfaces
+
+| Domain | Coverage and result | Limits |
+|---|---|---|
+| Accessibility | Checked native controls, disabled visitor actions, existing alert/status semantics, focus/escape paths, internal panel scroll, existing dialog/reduced-motion flows and eight combined axe states; no violations in the scans | No screen reader, native 200% zoom, or physical keyboard/device session |
+| Layout | Checked fresh preview, demo, every dock panel, connection failure, reconnect and delayed inspector at 320×700, 360×540, 390×844, 568×320, 667×375, 844×390, 768×1024, 1440×1000 as applicable; all app heights equal viewport, no document overflow, toolbar reachable | RTL, localized copy, virtual phone keyboard and safe-area hardware untested |
+| Writing | Checked failure/retained-view distinction, capacity recovery, successful retry and world-level learning truth before details; all four false/misleading states corrected | English only; template speech was unchanged |
+| Typography | Checked final screenshots and six existing size tokens; local font resolves, status/capacity copy wraps, intro decoration removes cleanly at short heights; probe passes | Non-Latin and native text enlargement untested |
+| Colors | Existing palette retained; interface script remeasured eight actual rendered pairs, all above 4.5:1; opaque notice and panel surfaces inspected in screenshots | No claim about every canvas pixel, wallet icon or third-party prompt |
+| UI | Checked pending/success/error/retry/loading states, all toolbar actions, capacity guards, scene-to-panel transitions and automatic reconnect; final screenshots inspected | Animation-panel slow replay and real wallet apps/passkeys untested |
+
+The assigned browser tool also reproduced the original 667×375 geometry, then inspected the final landscape preview and 390px connection failure. Final captures `preview-390.png`, `landscape-preview-667.png`, `landscape-residents-667.png`, `connection-failure-390.png`, `learning-loading-390.png` and `visitor-capacity-390.png` are in `docs/revision/`. The first 390px screen shows the product, connection status, Connect and Explore local demo.
+
+**Limitations:** WebKit launch was attempted again and refused because required host libraries (including GTK/GStreamer) are missing. No Safari, ARM64, Docker, real VPS, public TLS/WSS, physical wallet or deployment checks are claimed. Performance/learning comparison data below belong to the earlier accepted delivery; these client corrections did not rerun those experiments or establish a new capacity. Publication URL/final commit remain assigned by IMD after capture; publishing the static client does not install the service.
+
+The sections below preserve the earlier accepted delivery's evidence and operating boundaries.
+
 ## Result at a glance
 
 | Area | Result |

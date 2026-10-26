@@ -215,8 +215,9 @@ export class WorldConnection {
       if (epoch !== this.epoch) return;
       worldStore.patch({
         mode: "reconnecting",
-        error:
-          "Connection lost. Retrying automatically; the last world view is frozen.",
+        error: worldStore.state.world
+          ? "Connection lost. Retrying automatically; the last world view is frozen."
+          : "Cannot connect to the world. Retrying automatically.",
       });
       const delay = Math.min(15000, 1000 * 2 ** this.attempt++);
       this.timers.push(setTimeout(() => this.open(epoch), delay));

@@ -386,7 +386,7 @@ export function Inspector({
       {tab === "learning" && (
         <>
           <p className="notice">
-            {detail?.learning.enabled
+            {state.world?.learning
               ? "Learning from experience"
               : "Learning disabled for this world"}
             . A small local learning model adjusts action preferences.
@@ -436,8 +436,9 @@ export function Inspector({
             ))
           ) : (
             <p className="muted small">
-              No learned wallet opinions yet. Signed-in visitors can build a
-              history with these creatures.
+              {detail
+                ? "No learned wallet opinions yet. Signed-in visitors can build a history with these creatures."
+                : "Loading visitor memories…"}
             </p>
           )}
           <p className="fineprint">
