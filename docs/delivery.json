@@ -1,0 +1,65 @@
+{
+  "product": "Stratoks Phase 1",
+  "status": "implemented and locally validated; ready for submission capture",
+  "staticExport": "dist/index.html",
+  "staticAssetBase": "./",
+  "clientSource": "web/",
+  "clientLockfile": "web/package-lock.json",
+  "serverSource": "server/",
+  "containers": [
+    "deploy/Dockerfile",
+    "deploy/docker-compose.yml"
+  ],
+  "documentation": [
+    "README.md",
+    "DESIGN.md",
+    "docs/CLIENT.md",
+    "docs/VALIDATION.md",
+    "deploy/INSTALL.md"
+  ],
+  "evidence": [
+    "docs/screenshots/",
+    "docs/results/"
+  ],
+  "publication": {
+    "publicClientUrl": null,
+    "commit": null,
+    "reason": "Assigned by IMD/submission after capture. No public deployment or new commit was performed by this worker."
+  },
+  "backendDeployment": {
+    "performed": false,
+    "operatorSetup": "Install on the owner VPS; set DNS/TLS, ALLOWED_ORIGINS, actual developer wallet allowlist, and client HTTPS/WSS URLs."
+  },
+  "checks": {
+    "productionBuild": "passed",
+    "typescript": "passed",
+    "serverTests": 23,
+    "clientProtocolTests": 7,
+    "chromiumIntegrationChecks": 20,
+    "renderedInterfaceChecks": 9,
+    "tasteChecks": 16,
+    "axeStatesWithoutViolations": 8,
+    "headlessSimulationTicks": 500000,
+    "learningComparisonSeeds": 8,
+    "websocketLoadClients": [
+      100,
+      200
+    ]
+  },
+  "limitations": [
+    "Docker, ARM64 and the real VPS were not executed.",
+    "WebKit could not launch because host libraries were missing.",
+    "Physical devices, real wallet apps/extensions and screen readers were not tested.",
+    "Coinbase Smart Wallet connection is supplied, but the server supports EIP-191 account authentication only; EIP-1271/EIP-6492 is unfinished.",
+    "Static hosting does not deploy the simulation service."
+  ],
+  "integrity": {
+    "exportBytes": 1036995,
+    "indexSha256": "634a0b298ea9c56fcac26fbb4597e30064933b48e161783b3b1e066aedd46034",
+    "submissionLimitBytes": 8388608,
+    "existingHistoryBundleBytes": 77496,
+    "candidateFileBytes": 3644640,
+    "candidateFileCount": 120,
+    "note": "Candidate regular files plus existing Git history are conservatively below the limit before compression. Final commit is created by the submission system. No dependency/cache directories, unnecessary archives or submodules are included."
+  }
+}

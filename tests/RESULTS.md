@@ -1,5 +1,7 @@
 # Test and measurement results (Stratoks server, Phase 1)
 
+> Historical measurements from the earlier server contribution, preserved as recorded. Current client integration, 23-test server run, new local hardware/measurements and browser evidence are in [docs/VALIDATION.md](../docs/VALIDATION.md). The browser integration and viem signature cross-check listed as pending below have since been completed; ARM64/VPS/container and physical-wallet checks remain unperformed.
+
 **Where this ran.** Everything below was run **locally** on one machine: Intel Xeon (Skylake, IBRS) VM, 8 vCPU @ 2.0 GHz, 32 GB RAM, Linux 6.8, **x86_64**, Node v24 (`tests/results/hardware-local.txt`).
 **Not run:** Docker build/compose (no Docker on that machine), anything on **ARM64**, anything on the **real 2 vCPU / 4 GB VPS**. No capacity claim is made for the target VPS. The Phase 1 deployment package is therefore *untested as a container*.
 

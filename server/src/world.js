@@ -423,7 +423,8 @@ export class World {
     const result = this.applyEffect(body);
     const record = { id: req.id, request: body, actor, appliedTick: this.tick, result, payment: null };
     this.interventions[req.id] = record; this.interventionOrder.push(req.id);
-    if (this.interventionOrder.length > 20000) delete this.interventions[this.interventionOrder.shift()];
+    // Retain every accepted ID for this world: pruning would let an old retry apply twice.
+    // The durable intervention log and snapshot grow with accepted developer actions.
     this.totals.interventions++;
     const ev = this.emit('intervention', { id: req.id, kind: body.type, x: body.x, y: body.y, radius: body.radius, intensity: body.intensity, result });
     this.onRecord?.({ kind: 'intervention', seq: ev.seq, tick: this.tick, record });

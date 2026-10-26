@@ -115,7 +115,7 @@ export class Service {
       overloadPolicy: 'simulation slows (time dilation) and broadcasts are thinned; creatures are never removed to save CPU',
     };
   }
-  snapshot() { try { return this.store.save(this.world.toState()); } catch (e) { this.log('error', 'snapshot failed: ' + e.message); } }
+  snapshot(required = false) { try { return this.store.save(this.world.toState()); } catch (e) { this.log('error', 'snapshot failed: ' + e.message); if (required) throw e; } }
   resetWorld(opts) { // authenticated developer reset only (caller checks auth + confirmation)
     const old = this.world;
     this.snapshot();

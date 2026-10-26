@@ -63,11 +63,11 @@ export function createServer(service) {
       const s = requireDev(req); const b = await body(req);
       const r = service.world.intervene(b, s.addr);
       if (!r.ok) throw Object.assign(httpErr(r.status, r.error), { extra: r });
-      if (!r.duplicate) service.snapshot(); // durable before acknowledging: a retry after a crash cannot re-apply
+      service.snapshot(true); // Require durable state even for a retry after an earlier failed save.
       return { duplicate: r.duplicate, record: r.record };
     },
     'GET /api/dev/interventions': (q, req) => { requireDev(req); const w = service.world; return { interventions: w.interventionOrder.slice(-100).map((id) => w.interventions[id]) }; },
-    'POST /api/dev/backup': (q, req) => { requireDev(req); service.snapshot(); return { path: service.store.backup() }; },
+    'POST /api/dev/backup': (q, req) => { requireDev(req); service.snapshot(true); return { path: service.store.backup() }; },
     'POST /api/dev/reset': async (q, req) => {
       const s = requireDev(req); const b = await body(req);
       if (b.confirm !== `RESET ${service.world.id}`) throw httpErr(400, 'confirm_required');
