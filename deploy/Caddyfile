@@ -1,0 +1,5 @@
+# Terminates TLS (HTTPS + WSS) and proxies to the world container. Needs a DNS A/AAAA record for $SERVER_HOSTNAME.
+{$SERVER_HOSTNAME} {
+	encode zstd gzip
+	reverse_proxy world:8787
+}
